@@ -24,7 +24,7 @@ const actions = {
     commit("ADD_CONTACT", contact);
   },
   removeContact({ commit }, id) {
-    commit("REMOVE_CONTACT", id);
+    if (confirm("Хотите удалить контакт?")) commit("REMOVE_CONTACT", id);
   }
 };
 

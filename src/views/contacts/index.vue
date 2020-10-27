@@ -11,7 +11,16 @@
         <span class="name">{{ item.name }}</span>
         <span>
           <span class="phone">{{ item.phone }}</span>
-          <span class="remove" @click="removeContact(item.id)">⛌</span>
+          <span
+            class="remove"
+            @click="
+              e => {
+                e.stopPropagation();
+                removeContact(item.id);
+              }
+            "
+            >⛌</span
+          >
         </span>
       </li>
     </ul>

@@ -11,6 +11,7 @@ export default {
 
 <style lang="scss" scoped>
 .button {
+  margin: 0 10px;
   padding: 10px;
   background: cadetblue;
   color: white;

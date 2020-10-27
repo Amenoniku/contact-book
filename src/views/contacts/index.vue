@@ -1,18 +1,18 @@
 <template>
   <div class="contacts">
     <h4>Список контактов</h4>
-    <ul class="contact-list">
+    <ul class="contacts__list">
       <li
-        class="contact-list__item"
+        class="contacts__item"
         v-for="item in list"
         :key="item.id"
         @click="$router.push({ name: 'Contact', params: { id: item.id } })"
       >
-        <span class="name">{{ item.name }}</span>
+        <span class="contacts__name">{{ getValue(item, 0) }}</span>
         <span>
-          <span class="phone">{{ item.phone }}</span>
+          <span class="contacts__phone">{{ getValue(item, 1) }}</span>
           <span
-            class="remove"
+            class="contacts__remove"
             @click="
               e => {
                 e.stopPropagation();
@@ -40,15 +40,20 @@ export default {
     ...mapState("contacts", ["list"])
   },
   methods: {
+    getValue(item, index) {
+      return item.fields[index]?.value;
+    },
     ...mapActions("contacts", ["removeContact"])
   }
 };
 </script>
 
 <style lang="scss" scoped>
-.contact-list {
-  list-style: none;
-  padding: 0;
+.contacts {
+  &__list {
+    list-style: none;
+    padding: 0;
+  }
   &__item {
     cursor: pointer;
     margin: 0 20px;
@@ -56,9 +61,9 @@ export default {
     display: flex;
     justify-content: space-between;
     border-bottom: 2px whitesmoke solid;
-    .remove {
-      margin-left: 20px;
-    }
+  }
+  &__remove {
+    margin-left: 20px;
   }
 }
 

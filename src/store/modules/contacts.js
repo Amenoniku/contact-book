@@ -2,9 +2,27 @@ import idgen from "idgen";
 
 const state = {
   list: [
-    { id: idgen(5), name: "Эдуард", phone: "+79051287643" },
-    { id: idgen(5), name: "Даниил", phone: "+79493476541" },
-    { id: idgen(5), name: "Евгений", phone: "+79913549115" }
+    {
+      id: idgen(5),
+      fields: [
+        { label: "Имя", value: "Эдуард", id: idgen(7) },
+        { label: "Телефон", value: "+79051287643", id: idgen(7) }
+      ]
+    },
+    {
+      id: idgen(5),
+      fields: [
+        { label: "Имя", value: "Даниил", id: idgen(7) },
+        { label: "Телефон", value: "+79493476541", id: idgen(7) }
+      ]
+    },
+    {
+      id: idgen(5),
+      fields: [
+        { label: "Имя", value: "Евгений", id: idgen(7) },
+        { label: "Телефон", value: "+79913549115", id: idgen(7) }
+      ]
+    }
   ]
 };
 
@@ -15,6 +33,10 @@ const mutations = {
   REMOVE_CONTACT(state, id) {
     const index = state.list.findIndex(item => item.id === id);
     state.list.splice(index, 1);
+  },
+  UPDATE_CONTACT(state, { id, fields }) {
+    const index = state.list.findIndex(item => item.id === id);
+    state.list[index].fields = fields;
   }
 };
 
@@ -25,12 +47,20 @@ const actions = {
   },
   removeContact({ commit }, id) {
     if (confirm("Хотите удалить контакт?")) commit("REMOVE_CONTACT", id);
+  },
+  updateContact({ commit }, { id, fields }) {
+    commit("UPDATE_CONTACT", { id, fields });
   }
+};
+
+const getters = {
+  contactById: state => id => state.list.find(item => item.id === id) || {}
 };
 
 export default {
   namespaced: true,
   state,
   mutations,
-  actions
+  actions,
+  getters
 };

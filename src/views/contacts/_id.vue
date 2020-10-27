@@ -1,5 +1,6 @@
 <template>
-  <div class="home">
+  <div class="contact">
+    <span class="back" @click="$router.back()">⇦</span>
     <div>Пользователь {{ $route.params.id }}</div>
   </div>
 </template>

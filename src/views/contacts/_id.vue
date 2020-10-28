@@ -81,6 +81,7 @@ export default {
       this.addAction("addField", field);
     },
     removeField(index) {
+      if (!confirm("Хотите удалить поле?")) return;
       let removedItem = this.form.splice(index, 1)[0];
       removedItem.index = index;
       this.addAction("removeField", removedItem);
@@ -89,8 +90,9 @@ export default {
       let oldValue = this.contact.fields.find(
         findField => field.id === findField.id
       )?.value;
-      let actualValue = this.form[index].value;
       if (oldValue === actualValue) return;
+      if (!confirm("Хотите вернуть старое значение?")) return;
+      let actualValue = this.form[index].value;
       this.addAction("setOldValue", { actualValue, index });
       this.form[index].value = this.contact.fields.find(
         findField => field.id === findField.id

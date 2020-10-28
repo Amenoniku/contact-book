@@ -1,7 +1,7 @@
 <template>
   <div class="contact">
     <span class="contact__back" @click="$router.back()">⇦</span>
-    <span class="contact__back action-back" @click="$router.back()">↬</span>
+    <span class="contact__back action-back" @click="comeBack">↬</span>
     <p>
       Контакт: <span class="contact__name">{{ contact.id }}</span>
     </p>
@@ -26,7 +26,7 @@
 
 <script>
 import idgen from "idgen";
-import { mapState, mapActions } from "vuex";
+import { mapActions } from "vuex";
 
 import Button from "@/components/Button";
 
@@ -35,25 +35,52 @@ export default {
   components: { Button },
   data() {
     return {
-      form: [] // { label: <str>, value: <str> }
+      form: [], // { label: <str>, value: <str> }
+      actionStack: [] // { type: <str>, item: <str>}
     };
   },
   computed: {
     contact() {
       return this.$store.getters["contacts/contactById"](this.$route.params.id);
-    },
-    ...mapState("contacts", ["list"])
+    }
   },
   methods: {
-    comeBack() {},
+    addAction(type, item) {
+      this.actionStack.push({ type, item });
+    },
+    comeBack() {
+      let lastAction = this.actionStack[this.actionStack.length - 1] || {};
+      switch (lastAction.type) {
+        case "addField":
+          this.removeField(
+            this.form.findIndex(
+              findField => lastAction.item.id === findField.id
+            )
+          );
+          break;
+        case "removeField":
+          this.form.splice(lastAction.item.index, 0, lastAction.item);
+          break;
+        case "setOldValue":
+          this.form[lastAction.item.index].value = lastAction.item.oldValue;
+          break;
+      }
+      this.actionStack.pop();
+    },
     addField() {
       let label = prompt("Название поля:");
-      this.form.push({ label, value: "", id: idgen(7) });
+      let field = { label, value: "", id: idgen(7) };
+      this.form.push(field);
+      this.addAction("addField", field);
     },
     removeField(index) {
-      this.form.splice(index, 1);
+      let removedItem = this.form.splice(index, 1)[0];
+      removedItem.index = index;
+      this.addAction("removeField", removedItem);
     },
     setOldValue(field, index) {
+      let oldValue = this.form[index].value;
+      this.addAction("setOldValue", { oldValue, index });
       this.form[index].value = this.contact.fields.find(
         findField => field.id === findField.id
       )?.value;

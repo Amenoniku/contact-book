@@ -62,7 +62,7 @@ export default {
           this.form.splice(lastAction.item.index, 0, lastAction.item);
           break;
         case "setOldValue":
-          this.form[lastAction.item.index].value = lastAction.item.oldValue;
+          this.form[lastAction.item.index].value = lastAction.item.actualValue;
           break;
       }
       this.actionStack.pop();
@@ -79,8 +79,12 @@ export default {
       this.addAction("removeField", removedItem);
     },
     setOldValue(field, index) {
-      let oldValue = this.form[index].value;
-      this.addAction("setOldValue", { oldValue, index });
+      let oldValue = this.contact.fields.find(
+        findField => field.id === findField.id
+      )?.value;
+      let actualValue = this.form[index].value;
+      if (oldValue === actualValue) return;
+      this.addAction("setOldValue", { actualValue, index });
       this.form[index].value = this.contact.fields.find(
         findField => field.id === findField.id
       )?.value;
@@ -101,6 +105,9 @@ export default {
         if (v.fields) this.form = JSON.parse(JSON.stringify(v.fields));
       }
     }
+  },
+  created() {
+    if (!this.contact.id) this.$router.push("/contacts");
   }
 };
 </script>

@@ -3,9 +3,12 @@
     <span class="contact__back" @click="$router.back()">⇦</span>
     <span class="contact__back action-back" @click="comeBack">↬</span>
     <p>
-      Контакт: <span class="contact__name">{{ contact.id }}</span>
+      Контакт:
+      <span class="contact__name">{{
+        isNewContact ? "Новый" : contact.id
+      }}</span>
     </p>
-    <form class="contact__form">
+    <form v-if="form.length" class="contact__form">
       <label v-for="(field, index) in form" :key="field.id">
         <span class="contact__form-label">{{ field.label }}</span>
         <input type="text" v-model="field.value" />
@@ -17,6 +20,7 @@
         </span>
       </label>
     </form>
+    <p v-else class="empty-form">Добавте поле</p>
     <div class="contact__buttons">
       <Button label="Сохранить контакт" @click="updateContactHandler" />
       <Button label="Добавить поле" @click="addField" />
@@ -40,6 +44,9 @@ export default {
     };
   },
   computed: {
+    isNewContact() {
+      return this.$route.params.id === "new";
+    },
     contact() {
       return this.$store.getters["contacts/contactById"](this.$route.params.id);
     }
@@ -90,13 +97,19 @@ export default {
       )?.value;
     },
     async updateContactHandler() {
-      await this.updateContact({
-        id: this.$route.params.id,
-        fields: this.form
-      });
+      if (this.isNewContact)
+        this.addContact({
+          id: idgen(10),
+          fields: this.form
+        });
+      else
+        await this.updateContact({
+          id: this.$route.params.id,
+          fields: this.form
+        });
       this.$router.push("/contacts");
     },
-    ...mapActions("contacts", ["updateContact"])
+    ...mapActions("contacts", ["addContact", "updateContact"])
   },
   watch: {
     contact: {
@@ -107,7 +120,7 @@ export default {
     }
   },
   created() {
-    if (!this.contact.id) this.$router.push("/contacts");
+    if (!this.contact.id && !this.isNewContact) this.$router.push("/contacts");
   }
 };
 </script>

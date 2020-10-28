@@ -3,21 +3,21 @@ import idgen from "idgen";
 const state = {
   list: [
     {
-      id: idgen(5),
+      id: idgen(10),
       fields: [
         { label: "Имя", value: "Эдуард", id: idgen(7) },
         { label: "Телефон", value: "+79051287643", id: idgen(7) }
       ]
     },
     {
-      id: idgen(5),
+      id: idgen(10),
       fields: [
         { label: "Имя", value: "Даниил", id: idgen(7) },
         { label: "Телефон", value: "+79493476541", id: idgen(7) }
       ]
     },
     {
-      id: idgen(5),
+      id: idgen(10),
       fields: [
         { label: "Имя", value: "Евгений", id: idgen(7) },
         { label: "Телефон", value: "+79913549115", id: idgen(7) }
